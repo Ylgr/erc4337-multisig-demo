@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useMemo} from 'react'
 import {
     AlchemyEndpoint,
     Safe4337ModuleAddress,
@@ -12,7 +12,11 @@ import {
 } from './constants';
 import './App.css'
 import {ethers} from "ethers";
+import { AlchemySigner } from "@alchemy/aa-alchemy";
+import { useMutation } from "@tanstack/react-query";
 import axios from 'axios'
+import {PasskeySignupComponent} from "./PasskeySignupComponent.tsx";
+import {Button, Card} from "react-bootstrap";
 // import {Safe4337Pack} from "@safe-global/relay-kit";
 
 const calculateProxyAddress = async (inititalizer: string, nonce: number | string): Promise<string> => {
@@ -27,55 +31,55 @@ function App() {
 
     const [deployedAddress, setDeployedAddress] = useState<string>("")
     const [initCode, setInitCode] = useState<string>("")
-    const [wallet, setWallet] = useState<ethers.Wallet>()
+    // const [wallet, setWallet] = useState<ethers.Wallet>()
     // const [safe4337Pack, setSafe4337Pack] = useState<Safe4337Pack>(null)
     const nonce = 0
 
-    useEffect(() => {
-        console.log('init')
-        const wallet = new ethers.Wallet(process.env.VITE_PRIVATE_KEY as string)
-        setWallet(wallet)
-
-        const testWallet = wallet.address
-        const encodedInitializer = SafeSingletonContract.interface.encodeFunctionData("setup", [
-            [testWallet],
-            1,
-            SafeModuleSetupAddress,
-            SafeModuleSetupContract.interface.encodeFunctionData('enableModules', [[Safe4337ModuleAddress]]),
-            Safe4337ModuleAddress,
-            ethers.ZeroAddress,
-            0,
-            ethers.ZeroAddress,
-        ]);
-        const _initCode = ethers.concat([
-            SafeProxyFactoryAddress,
-            SafeProxyFactoryContract.interface.encodeFunctionData("createProxyWithNonce", [SafeSingletonAddress as string, encodedInitializer, nonce]),
-        ]);
-        console.log('before calculate')
-        const _deployedAddress = calculateProxyAddress(encodedInitializer, nonce).then((address) => {
-            console.log('_deployedAddress: ', address)
-            setDeployedAddress(address)
-            return address
-        });
-        console.log('_initCode: ', _initCode)
-        console.log('local wallet', wallet.address)
-        setInitCode(_initCode)
-
-        // Safe4337Pack.init({
-        //     provider: AlchemyEndpoint,
-        //     signer: process.env.VITE_PRIVATE_KEY as string,
-        //     rpcUrl: AlchemyEndpoint,
-        //     bundlerUrl: AlchemyEndpoint,
-        //     options: {
-        //         owners: [wallet.address],
-        //         threshold: 1
-        //     },
-        //     // ...
-        // }).then((_safe4337Pack) => {
-        //     setSafe4337Pack(_safe4337Pack)
-        // });
-
-    }, [])
+    // useEffect(() => {
+    //     console.log('init')
+    //     const wallet = new ethers.Wallet(process.env.VITE_PRIVATE_KEY as string)
+    //     setWallet(wallet)
+    //
+    //     const testWallet = wallet.address
+    //     const encodedInitializer = SafeSingletonContract.interface.encodeFunctionData("setup", [
+    //         [testWallet],
+    //         1,
+    //         SafeModuleSetupAddress,
+    //         SafeModuleSetupContract.interface.encodeFunctionData('enableModules', [[Safe4337ModuleAddress]]),
+    //         Safe4337ModuleAddress,
+    //         ethers.ZeroAddress,
+    //         0,
+    //         ethers.ZeroAddress,
+    //     ]);
+    //     const _initCode = ethers.concat([
+    //         SafeProxyFactoryAddress,
+    //         SafeProxyFactoryContract.interface.encodeFunctionData("createProxyWithNonce", [SafeSingletonAddress as string, encodedInitializer, nonce]),
+    //     ]);
+    //     console.log('before calculate')
+    //     const _deployedAddress = calculateProxyAddress(encodedInitializer, nonce).then((address) => {
+    //         console.log('_deployedAddress: ', address)
+    //         setDeployedAddress(address)
+    //         return address
+    //     });
+    //     console.log('_initCode: ', _initCode)
+    //     console.log('local wallet', wallet.address)
+    //     setInitCode(_initCode)
+    //
+    //     // Safe4337Pack.init({
+    //     //     provider: AlchemyEndpoint,
+    //     //     signer: process.env.VITE_PRIVATE_KEY as string,
+    //     //     rpcUrl: AlchemyEndpoint,
+    //     //     bundlerUrl: AlchemyEndpoint,
+    //     //     options: {
+    //     //         owners: [wallet.address],
+    //     //         threshold: 1
+    //     //     },
+    //     //     // ...
+    //     // }).then((_safe4337Pack) => {
+    //     //     setSafe4337Pack(_safe4337Pack)
+    //     // });
+    //
+    // }, [])
 
 
     // async function testCreateSafe() {
@@ -179,9 +183,10 @@ function App() {
 
   return (
     <>
-        <h3>Local wallet: {wallet?.address}</h3>
-        <h3>Deployed address: {deployedAddress}</h3>
+        {/*<h3>Local wallet: {wallet?.address}</h3>*/}
+        {/*<h3>Deployed address: {deployedAddress}</h3>*/}
       {/*<button onClick={() => testCreateSafe()}>Test wallet</button>*/}
+        <PasskeySignupComponent />
     </>
   )
 }
