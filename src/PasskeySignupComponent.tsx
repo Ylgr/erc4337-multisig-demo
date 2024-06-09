@@ -2,6 +2,8 @@ import {AlchemySigner, User} from "@alchemy/aa-alchemy";
 import {useEffect, useState} from "react";
 import {Button, Card, Col, Container, Row} from "react-bootstrap";
 import {Input} from "@alchemy/aa-alchemy/react";
+import {Safe4337Pack} from "@safe-global/relay-kit";
+import {Eip1193Provider} from "ethers";
 
 export const PasskeySignupComponent = () => {
     const email1 = process.env.VITE_EMAIL1;
@@ -112,6 +114,18 @@ export const PasskeySignupComponent = () => {
         console.log(user2);
     }
 
+    const createSampleTx = async () => {
+        const safe4337Pack = await Safe4337Pack.init({
+            provider: signer1 as Eip1193Provider,
+            rpcUrl: 'RPC_URL',
+            bundlerUrl: `https://api.pimlico.io/v1/sepolia/rpc?apikey=${process.env.PIMLICO_API_KEY}`,
+            options: {
+                owners: ['SIGNER_ADDRESS'],
+                threshold: 1
+            },
+        })
+    }
+
     return (
         <Container>
             <Row>
@@ -170,7 +184,12 @@ export const PasskeySignupComponent = () => {
                     <Card.Body>
                         <Card.Title>Multisigs account</Card.Title>
                         <Card.Text>
+                            Owner address:
+                            <br/>
+                            <br/>
+                            <br/>
                             2 of 3 threshold
+                            <br/>
                             Deployed address:
                         </Card.Text>
                         <Button>Create account</Button>
