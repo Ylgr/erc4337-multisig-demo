@@ -17,15 +17,6 @@ import { useMutation } from "@tanstack/react-query";
 import axios from 'axios'
 import {PasskeySignupComponent} from "./PasskeySignupComponent.tsx";
 import {Button, Card} from "react-bootstrap";
-// import {Safe4337Pack} from "@safe-global/relay-kit";
-
-const calculateProxyAddress = async (inititalizer: string, nonce: number | string): Promise<string> => {
-    const proxyCreationCode = await SafeProxyFactoryContract.proxyCreationCode()
-
-    const deploymentCode = ethers.solidityPacked(['bytes', 'uint256'], [proxyCreationCode, SafeSingletonAddress])
-    const salt = ethers.solidityPackedKeccak256(['bytes32', 'uint256'], [ethers.solidityPackedKeccak256(['bytes'], [inititalizer]), nonce])
-    return ethers.getCreate2Address(SafeProxyFactoryAddress, salt, ethers.keccak256(deploymentCode))
-}
 
 function App() {
 

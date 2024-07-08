@@ -10,5 +10,8 @@ export default ({ mode }) => {
       global: 'window'
     },
     plugins: [react()],
+    server: {
+      port: 5175
+    }
   })
 }
